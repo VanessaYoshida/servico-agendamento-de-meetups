@@ -95,31 +95,25 @@ public class RegistrationControllerTest {
     }
 
     @Test
-    @DisplayName("Should throw an exception when thy to create a new registration with another registration created")
-    public void createRegistrationDuplicated() throws Exception {
+    @DisplayName("Should throw an exception when try to create a new registration with an registration already created.")
+    public void createRegistrationWithDuplicatedRegistration() throws Exception {
 
-        //cenario
         RegistrationDTO dto = createNewRegistration();
-        String json = new ObjectMapper().writeValueAsString(dto);
+        String json  = new ObjectMapper().writeValueAsString(dto);
 
-        //execucao
         BDDMockito.given(registrationService.save(any(Registration.class)))
-                .willThrow(new BusinessException("Registration already created"));
+                .willThrow(new BusinessException("Registration already created!"));
 
-        String js0on = new ObjectMapper().writeValueAsString(dto);
-
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+        MockHttpServletRequestBuilder request  = MockMvcRequestBuilders
                 .post(REGISTRATION_API)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .content(json);
 
-        //Assert
         mockMvc.perform(request)
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("errors", hasSize(1)))
-                .andExpect(jsonPath("errors[0]").value("Registration already created"));
-
+                .andExpect(jsonPath("errors[0]").value("Registration already created!"));
     }
 
     @Test
@@ -279,7 +273,7 @@ public class RegistrationControllerTest {
 
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-                .put(REGISTRATION_API.concat(queryString))
+                .get(REGISTRATION_API.concat(queryString))
                 .accept(MediaType.APPLICATION_JSON);
 
         mockMvc

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Data
@@ -20,7 +21,7 @@ public class RegistrationDTO {
     @NotEmpty
     private String name;
 
-    @NotEmpty
+    @NotNull
     private LocalDate dateOfRegistration;
 
     @NotEmpty
