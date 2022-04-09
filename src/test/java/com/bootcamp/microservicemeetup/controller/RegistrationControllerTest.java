@@ -4,6 +4,7 @@ import com.bootcamp.microservicemeetup.exception.BusinessException;
 import com.bootcamp.microservicemeetup.model.RegistrationDTO;
 import com.bootcamp.microservicemeetup.model.entity.Registration;
 import com.bootcamp.microservicemeetup.service.RegistrationService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,7 +25,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -75,9 +75,28 @@ public class RegistrationControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").value(101))
                 .andExpect(jsonPath("name").value(registrationDTOBuilder.getName()))
-                .andExpect(jsonPath("dateOfRegistration").value(registrationDTOBuilder.getDateOfRegistration()))
+                .andExpect(jsonPath("dateOfRegistration").value(registrationDTOBuilder.getDateOfRegistration().toString()))
                 .andExpect(jsonPath("registration").value(registrationDTOBuilder.getRegistration()));
     }
+
+//    @Test
+//    public void whenUsingJsonFormatAnnotationToFormatDate_thenCorrect()
+//            throws JsonProcessingException, ParseException {
+//
+//        RegistrationDTO registrationDTOBuilder = createNewRegistration();
+//        Registration savedRegistration = Registration.builder().id(101)
+//                .name("Vanessa Yoshida").dateOfRegistration(LocalDate.now()).registration("001").build();
+//
+//        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+//        df.setTimeZone(TimeZone.getTimeZone("UTC"));
+//
+//        String toParse = "2022-04-08";
+//        Date date = df.parse(toParse);
+//
+//        ObjectMapper mapper = new ObjectMapper();
+//        String result = mapper.writeValueAsString(registrationDTOBuilder);
+//        assertThat(result, containsString(toParse));
+//    }
 
     @Test
     @DisplayName("Should throw an exception when not have data enough for the test")
@@ -135,10 +154,10 @@ public class RegistrationControllerTest {
 
         mockMvc
                 .perform(requestBuilder)
-                .andExpect(status().isCreated())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("id").value(101))
                 .andExpect(jsonPath("name").value(createNewRegistration().getName()))
-                .andExpect(jsonPath("dateOfRegistration").value(createNewRegistration().getDateOfRegistration()))
+                .andExpect(jsonPath("dateOfRegistration").value(createNewRegistration().getDateOfRegistration().toString()))
                 .andExpect(jsonPath("registration").value(createNewRegistration().getRegistration()));
 
     }
@@ -230,7 +249,7 @@ public class RegistrationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("id").value(id))
                 .andExpect(jsonPath("name").value(createNewRegistration().getName()))
-                .andExpect(jsonPath("dateOfRegistration").value(createNewRegistration().getDateOfRegistration()))
+                .andExpect(jsonPath("dateOfRegistration").value(createNewRegistration().getDateOfRegistration().toString()))
                 .andExpect(jsonPath("registration").value("246"));
     }
 

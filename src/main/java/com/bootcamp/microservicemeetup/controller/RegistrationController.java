@@ -34,7 +34,7 @@ public class RegistrationController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.ACCEPTED)
+    @ResponseStatus(HttpStatus.CREATED)
     public RegistrationDTO create(@RequestBody @Valid RegistrationDTO registrationDTO){
 
         Registration entity = modelMapper.map(registrationDTO, Registration.class);
