@@ -15,6 +15,7 @@ import org.springframework.data.domain.*;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -197,25 +198,26 @@ public class RegistrationServiceTest {
         Mockito.verify(repository, Mockito.times(1)).findByRegistration(registrationAttribute);
     }
 
-//    @Test
-//    @DisplayName("Should get all Registration")
-//    public void getAllRegistration() {
-//
-//        // cenario
-//        Registration registration = createValidRegistration();
-//        Integer id = 11;
-//        Registration registration2 = createValidRegistration();
-//        registration2.setId(id);
-//        Mockito.when(repository.findAll).thenReturn(Array.asList(registration, registration2));
-//
-//
-//        // execucao
-//        Optional<Registration> foundRegistration = registrationService.getRegistrationById(id);
-//
-//        // assert
-//        assertThat(foundRegistration.isPresent()).isTrue();
-//
-//    }
+    @Test
+    @DisplayName("Should get all Registration")
+    public void getAllRegistration() {
+
+        // cenario
+        Registration registration = createValidRegistration();
+        Integer id = 11;
+
+        Registration registration2 = createValidRegistration();
+        registration2.setId(id);
+
+        Mockito.when(repository.findAll()).thenReturn(Arrays.asList(registration, registration2));
+
+        // execucao
+        List<Registration> foundRegistration = registrationService.getRegistrationAll();
+
+        // assert
+        assertThat(foundRegistration.listIterator());
+        assertEquals(2, foundRegistration.size(), "Same amount of Jedi found");
+    }
 
 
 }

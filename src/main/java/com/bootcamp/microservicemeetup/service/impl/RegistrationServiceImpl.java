@@ -9,6 +9,7 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -32,7 +33,6 @@ public class RegistrationServiceImpl implements RegistrationService {
     public Optional<Registration> getRegistrationById(Integer id) {
         return this.repository.findById(id);
     }
-
 
     // inserir mais uma validacao no delete();
     @Override
@@ -62,6 +62,11 @@ public class RegistrationServiceImpl implements RegistrationService {
                         .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING));
 
         return repository.findAll(example, pageRequest);
+    }
+
+    @Override
+    public List<Registration> getRegistrationAll() {
+        return this.repository.findAll();
     }
 
     @Override

@@ -9,8 +9,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -52,7 +50,6 @@ public class RegistrationController {
                 .orElseThrow( () -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteByRegistrationId(@PathVariable Integer id) {
@@ -71,7 +68,6 @@ public class RegistrationController {
 
             return modelMapper.map(registration, RegistrationDTO.class);
         }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-
     }
 
     @GetMapping

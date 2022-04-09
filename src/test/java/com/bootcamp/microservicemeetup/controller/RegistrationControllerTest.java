@@ -157,7 +157,6 @@ public class RegistrationControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-
     @Test
     @DisplayName("Should delete the registration")
     public void deleteRegistration() throws Exception {
