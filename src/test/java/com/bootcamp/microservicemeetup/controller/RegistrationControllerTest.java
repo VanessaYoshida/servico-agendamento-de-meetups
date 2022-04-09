@@ -79,25 +79,6 @@ public class RegistrationControllerTest {
                 .andExpect(jsonPath("registration").value(registrationDTOBuilder.getRegistration()));
     }
 
-//    @Test
-//    public void whenUsingJsonFormatAnnotationToFormatDate_thenCorrect()
-//            throws JsonProcessingException, ParseException {
-//
-//        RegistrationDTO registrationDTOBuilder = createNewRegistration();
-//        Registration savedRegistration = Registration.builder().id(101)
-//                .name("Vanessa Yoshida").dateOfRegistration(LocalDate.now()).registration("001").build();
-//
-//        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-//        df.setTimeZone(TimeZone.getTimeZone("UTC"));
-//
-//        String toParse = "2022-04-08";
-//        Date date = df.parse(toParse);
-//
-//        ObjectMapper mapper = new ObjectMapper();
-//        String result = mapper.writeValueAsString(registrationDTOBuilder);
-//        assertThat(result, containsString(toParse));
-//    }
-
     @Test
     @DisplayName("Should throw an exception when not have data enough for the test")
     public void createInvalidRegistrationTest() throws Exception{
@@ -286,9 +267,8 @@ public class RegistrationControllerTest {
         BDDMockito.given(registrationService.find(Mockito.any(Registration.class), Mockito.any(Pageable.class)) )
                 .willReturn(new PageImpl<Registration>(Arrays.asList(registration), PageRequest.of(0,100), 1));
 
-
-        String queryString = String.format("?name=%s&dateOfRegistration=%s&page=0&size=100",
-                registration.getRegistration(), registration.getDateOfRegistration());
+        String queryString = String.format("?name=%s&page=0&size=100",
+                registration.getRegistration(), registration.getDateOfRegistration().toString());
 
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders

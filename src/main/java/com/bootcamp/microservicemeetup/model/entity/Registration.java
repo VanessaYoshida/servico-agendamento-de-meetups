@@ -28,6 +28,4 @@ public class Registration {
 
     @Column
     private String registration;
-
-
 }
