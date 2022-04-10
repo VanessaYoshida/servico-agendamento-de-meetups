@@ -204,8 +204,8 @@ public class RegistrationServiceTest {
 
         // cenario
         Registration registration = createValidRegistration();
-        Integer id = 11;
 
+        Integer id = 11;
         Registration registration2 = createValidRegistration();
         registration2.setId(id);
 
@@ -218,6 +218,5 @@ public class RegistrationServiceTest {
         assertThat(foundRegistration.listIterator());
         assertEquals(2, foundRegistration.size(), "Same amount of Jedi found");
     }
-
 
 }
