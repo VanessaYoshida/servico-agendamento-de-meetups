@@ -76,7 +76,7 @@ TDD é uma sigla para Test Driven Development, ou Desenvolvimento Orientado a Te
 - [X] Testes de contrato no controller
 - [X] Testes unitarios no repository
 - [X] Implementação do repository
-- [ ] Swagger
+- [X] Swagger
 - [ ] Testes locais via postman
 - [ ] Deploy no azure
 
