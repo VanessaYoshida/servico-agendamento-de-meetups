@@ -39,7 +39,7 @@ public class MeetupController {
     Meetup entity = Meetup.builder()
       .registration(registration)
       .event(meetupDTO.getEvent())
-      .meetupDate("10/10/2021")
+      .meetupDate("10/10/2022")
       .build();
 
     entity = meetupService.save(entity);

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 import java.time.LocalDate;
 
 @Data
@@ -28,5 +29,8 @@ public class Registration {
 
     @Column
     private String registration;
+
+    @OneToMany(mappedBy = "registration")
+    private List<Meetup> meetups;
 
 }

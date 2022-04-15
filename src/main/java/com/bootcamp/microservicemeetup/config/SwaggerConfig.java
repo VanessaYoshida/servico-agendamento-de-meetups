@@ -36,7 +36,7 @@ public class SwaggerConfig {
   }
 
   private Contact contact() {
-    return new Contact("Womakerscode Ana Neri",
+    return new Contact("Womakerscode Vanessa Yoshida",
       "https://www.linkedin.com/in/vanessayoshida/",
       "vanessayoshida92@gmail.com");
   }

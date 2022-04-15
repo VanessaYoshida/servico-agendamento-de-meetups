@@ -56,7 +56,6 @@ public class RegistrationController {
     registrationService.delete(registration);
   }
 
-
   @PutMapping("{id}")
   public RegistrationDTO update(@PathVariable Integer id, RegistrationDTO registrationDTO) {
 
