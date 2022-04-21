@@ -17,5 +17,5 @@ public interface MeetupRepository extends JpaRepository<Meetup, Integer> {
     Pageable pageable
   );
 
-  Page<Meetup> findByRegistration(Registration registration, Pageable pageable );
+  Page<Meetup> findByRegistration(Registration registration, Pageable pageable);
 }

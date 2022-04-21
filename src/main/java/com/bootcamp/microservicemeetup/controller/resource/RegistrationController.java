@@ -41,7 +41,7 @@ public class RegistrationController {
 
   @GetMapping("{id}")
   @ResponseStatus(HttpStatus.OK)
-  public RegistrationDTO get (@PathVariable Integer id) {
+  public RegistrationDTO get(@PathVariable Integer id) {
 
     return registrationService
       .getRegistrationById(id)

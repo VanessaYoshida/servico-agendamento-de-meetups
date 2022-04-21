@@ -2,6 +2,7 @@ package com.bootcamp.microservicemeetup.controller.resource;
 
 import com.bootcamp.microservicemeetup.controller.dto.MeetupDTO;
 import com.bootcamp.microservicemeetup.controller.dto.MeetupFilterDTO;
+import com.bootcamp.microservicemeetup.controller.dto.RegisteredMeetupDTO;
 import com.bootcamp.microservicemeetup.controller.dto.RegistrationDTO;
 import com.bootcamp.microservicemeetup.model.entity.Meetup;
 import com.bootcamp.microservicemeetup.model.entity.Registration;
@@ -46,6 +47,15 @@ public class MeetupController {
     return entity.getId();
   }
 
+    @GetMapping("{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public RegisteredMeetupDTO get(@PathVariable Integer id) {
+
+        return meetupService
+                .getById(id)
+                .map(registration -> modelMapper.map(registration, RegisteredMeetupDTO.class))
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
 
   @GetMapping
   public Page<MeetupDTO> find(MeetupFilterDTO dto, Pageable pageRequest) {

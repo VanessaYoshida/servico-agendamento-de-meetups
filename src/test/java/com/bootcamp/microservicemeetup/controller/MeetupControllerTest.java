@@ -75,7 +75,7 @@ public class MeetupControllerTest {
     }
 
     @Test
-    @DisplayName("Should return error when try to register an a meetup nonexistent")
+    @DisplayName("Should return error when try to register an a meetup no existent")
     public void invalidRegistrationCreateMeetupTest() throws Exception {
 
         MeetupDTO dto = MeetupDTO.builder().registrationAttribute("234").event("Womakerscode Dados").build();
@@ -117,5 +117,35 @@ public class MeetupControllerTest {
 
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("Should get meetup registration")
+    public void getMeetupTest() throws Exception {
+
+        Integer idRegistration = 44;
+
+        MeetupDTO dto = MeetupDTO.builder().registrationAttribute("234").event("Womakerscode Dados").build();
+
+        Registration registration = Registration.builder().id(idRegistration).registration("234").build();
+
+        Meetup meetup = Meetup.builder().id(idRegistration).event("Womakerscode Dados").registration(registration).meetupDate("10/10/2022").build();
+
+        String json = new ObjectMapper().writeValueAsString(meetup);
+
+        BDDMockito.given(meetupService.getById(idRegistration)).willReturn(Optional.of(meetup));
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .get(MEETUP_API.concat("/" + idRegistration))
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk());
+//                .andExpect(jsonPath("id").value(44))
+//                .andExpect(jsonPath("event").value("Womakerscode Dados"))
+//                .andExpect(jsonPath("registration").value(registration))
+//                .andExpect(jsonPath("meetupDate").value("10/10/2022"));
     }
 }
