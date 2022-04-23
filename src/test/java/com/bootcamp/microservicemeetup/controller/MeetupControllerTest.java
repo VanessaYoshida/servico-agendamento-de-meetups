@@ -191,21 +191,10 @@ public class MeetupControllerTest {
 
         Integer idRegistration = 44;
 
-        MeetupDTO.builder().registrationAttribute("234").event("Womakerscode Dados").build();
-
-        Registration.builder().id(idRegistration).registration("234").build();
-
-        BDDMockito.given(meetupService.getById(idRegistration)).willReturn(Optional.empty());
-
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .get(MEETUP_API.concat("/" + idRegistration))
-                .accept(MediaType.APPLICATION_JSON);
-
-        mockMvc.perform(request)
-                .andExpect(status().isNotFound());
+        Registration registration = Registration.builder().id(idRegistration).registration("234").build();
 
         BDDMockito.given(meetupService.getById(anyInt()))
-                .willReturn(Optional.of(Registration.builder().id(11).build()));
+                .willReturn(Optional.of(Meetup.builder().id(idRegistration).event("Womakerscode Dados").registration(registration).meetupDate("10/10/2022").registered(true).build()));
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .delete(MEETUP_API.concat("/" + idRegistration))
