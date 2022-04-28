@@ -27,9 +27,6 @@ public class Registration {
     @Column(name = "date_of_registration")
     private LocalDate dateOfRegistration;
 
-    @Column
-    private String registration;
-
     @OneToMany(mappedBy = "registration")
     private List<Meetup> meetups;
 

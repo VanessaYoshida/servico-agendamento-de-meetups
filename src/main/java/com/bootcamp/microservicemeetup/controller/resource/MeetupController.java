@@ -8,6 +8,8 @@ import com.bootcamp.microservicemeetup.model.entity.Meetup;
 import com.bootcamp.microservicemeetup.model.entity.Registration;
 import com.bootcamp.microservicemeetup.service.MeetupService;
 import com.bootcamp.microservicemeetup.service.RegistrationService;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -16,9 +18,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/meetups")
@@ -35,7 +40,7 @@ public class MeetupController {
   @ResponseStatus(HttpStatus.CREATED)
   private Integer create(@RequestBody MeetupDTO meetupDTO) {
 
-    Registration registration = registrationService.getRegistrationByRegistrationAttribute(meetupDTO.getRegistrationAttribute())
+    Registration registration = registrationService.getRegistrationById(meetupDTO.getRegistration().getId())
       .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
     Meetup entity = Meetup.builder()
       .registration(registration)
@@ -50,10 +55,9 @@ public class MeetupController {
     @GetMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
     public RegisteredMeetupDTO get(@PathVariable Integer id) {
-
         return meetupService
                 .getById(id)
-                .map(registration -> modelMapper.map(registration, RegisteredMeetupDTO.class))
+                .map(meetup ->  new RegisteredMeetupDTO(meetup.getRegistered()))
                 .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 

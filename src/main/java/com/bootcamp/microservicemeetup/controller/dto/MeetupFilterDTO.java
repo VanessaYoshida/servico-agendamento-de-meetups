@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class MeetupFilterDTO {
 
-  private String registration;
+  private Integer registrationId;
 
   private  String event;
 }

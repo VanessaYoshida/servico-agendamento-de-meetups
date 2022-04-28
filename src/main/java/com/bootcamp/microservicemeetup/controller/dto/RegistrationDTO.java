@@ -30,7 +30,4 @@ public class RegistrationDTO {
   @JsonSerialize(using = LocalDateSerializer.class)
   @JsonDeserialize(using = LocalDateDeserializer.class)
   private LocalDate dateOfRegistration;
-
-  @NotEmpty
-  private String registration;
 }

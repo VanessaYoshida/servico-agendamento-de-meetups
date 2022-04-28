@@ -40,6 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ActiveProfiles("test")
 @WebMvcTest(controllers = {RegistrationController.class})
 @AutoConfigureMockMvc
+
 public class RegistrationControllerTest {
 
     static String REGISTRATION_API = "/api/registration";
@@ -57,7 +58,9 @@ public class RegistrationControllerTest {
         //cenario
         RegistrationDTO registrationDTOBuilder = createNewRegistration();
         Registration savedRegistration = Registration.builder().id(101)
-                .name("Vanessa Yoshida").dateOfRegistration(LocalDate.now()).registration("001").build();
+                .name("Vanessa Yoshida")
+                .dateOfRegistration(LocalDate.now())
+                .build();
 
         //execucao
         BDDMockito.given(registrationService.save(any(Registration.class))).willReturn(savedRegistration);
@@ -76,8 +79,7 @@ public class RegistrationControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").value(101))
                 .andExpect(jsonPath("name").value(registrationDTOBuilder.getName()))
-                .andExpect(jsonPath("dateOfRegistration").value(registrationDTOBuilder.getDateOfRegistration().toString()))
-                .andExpect(jsonPath("registration").value(registrationDTOBuilder.getRegistration()));
+                .andExpect(jsonPath("dateOfRegistration").value(registrationDTOBuilder.getDateOfRegistration()));
     }
 
     @Test
@@ -125,7 +127,6 @@ public class RegistrationControllerTest {
                 .id(id)
                 .name(createNewRegistration().getName())
                 .dateOfRegistration(createNewRegistration().getDateOfRegistration())
-                .registration(createNewRegistration().getRegistration())
                 .build();
 
         BDDMockito.given(registrationService.getRegistrationById(id)).willReturn(Optional.of(registration));
@@ -139,8 +140,7 @@ public class RegistrationControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("id").value(101))
                 .andExpect(jsonPath("name").value(createNewRegistration().getName()))
-                .andExpect(jsonPath("dateOfRegistration").value(createNewRegistration().getDateOfRegistration().toString()))
-                .andExpect(jsonPath("registration").value(createNewRegistration().getRegistration()));
+                .andExpect(jsonPath("dateOfRegistration").value(createNewRegistration().getDateOfRegistration()));
 
     }
 
@@ -168,13 +168,12 @@ public class RegistrationControllerTest {
                 .id(id)
                 .name(createNewRegistration().getName())
                 .dateOfRegistration(createNewRegistration().getDateOfRegistration())
-                .registration(createNewRegistration().getRegistration()).build();
+                .build();
 
         BDDMockito.given(registrationService.find(Mockito.any(Registration.class), Mockito.any(Pageable.class)) )
                 .willReturn(new PageImpl<Registration>(Arrays.asList(registration), PageRequest.of(0,100), 1));
 
-        String queryString = String.format("?name=%s&page=0&size=100",
-                registration.getRegistration(), registration.getDateOfRegistration().toString());
+        String queryString = String.format("?name=%s&page=0&size=100", registration.getDateOfRegistration().toString());
 
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
@@ -235,7 +234,6 @@ public class RegistrationControllerTest {
                         .id(id)
                         .name("Luffy Yoshida")
                         .dateOfRegistration(LocalDate.now())
-                        .registration("246")
                         .build();
 
         BDDMockito.given(registrationService.getRegistrationById(anyInt()))
@@ -246,7 +244,6 @@ public class RegistrationControllerTest {
                         .id(id)
                         .name("Vanessa Yoshida")
                         .dateOfRegistration(LocalDate.now())
-                        .registration("246")
                         .build();
 
         BDDMockito.given(registrationService
@@ -287,7 +284,7 @@ public class RegistrationControllerTest {
 
 
     private RegistrationDTO createNewRegistration() {
-        return  RegistrationDTO.builder().id(101).name("Vanessa Yoshida").dateOfRegistration(LocalDate.now()).registration("001").build();
+        return  RegistrationDTO.builder().id(101).name("Vanessa Yoshida").dateOfRegistration(LocalDate.now()).build();
     }
 
 }
