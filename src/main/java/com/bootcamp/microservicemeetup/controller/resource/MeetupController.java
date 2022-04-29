@@ -2,7 +2,6 @@ package com.bootcamp.microservicemeetup.controller.resource;
 
 import com.bootcamp.microservicemeetup.controller.dto.MeetupDTO;
 import com.bootcamp.microservicemeetup.controller.dto.MeetupFilterDTO;
-import com.bootcamp.microservicemeetup.controller.dto.RegisteredMeetupDTO;
 import com.bootcamp.microservicemeetup.controller.dto.RegistrationDTO;
 import com.bootcamp.microservicemeetup.model.entity.Meetup;
 import com.bootcamp.microservicemeetup.model.entity.Registration;
@@ -30,53 +29,62 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class MeetupController {
 
-  private final MeetupService meetupService;
-  private final RegistrationService registrationService;
-  private final ModelMapper modelMapper;
+    private final MeetupService meetupService;
+    private final RegistrationService registrationService;
+    private final ModelMapper modelMapper;
 
 
 
-  @PostMapping
-  @ResponseStatus(HttpStatus.CREATED)
-  private Integer create(@RequestBody MeetupDTO meetupDTO) {
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    private Integer create(@RequestBody MeetupDTO meetupDTO) {
 
-    Registration registration = registrationService.getRegistrationById(meetupDTO.getRegistration().getId())
-      .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
-    Meetup entity = Meetup.builder()
-      .registration(registration)
-      .event(meetupDTO.getEvent())
-      .meetupDate("10/10/2022")
-      .build();
+        Meetup entity = Meetup.builder()
+                .event(meetupDTO.getEvent())
+                .meetupDate(meetupDTO.getDate().toString())
+                .build();
 
-    entity = meetupService.save(entity);
-    return entity.getId();
-  }
-
-    @GetMapping("{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public RegisteredMeetupDTO get(@PathVariable Integer id) {
-        return meetupService
-                .getById(id)
-                .map(meetup ->  new RegisteredMeetupDTO(meetup.getRegistered()))
-                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        entity = meetupService.save(entity);
+        return entity.getId();
     }
 
-  @GetMapping
-  public Page<MeetupDTO> find(MeetupFilterDTO dto, Pageable pageRequest) {
-    Page<Meetup> result = meetupService.find(dto, pageRequest);
-    List<MeetupDTO> meetups = result
-      .getContent()
-      .stream()
-      .map(entity -> {
+//    @GetMapping("{id}")
+//    @ResponseStatus(HttpStatus.OK)
+//    public RegisteredMeetupDTO get(@PathVariable Integer id) {
+//        return meetupService
+//                .getById(id)
+//                .map(meetup ->  new RegisteredMeetupDTO(meetup.getRegistered()))
+//                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
+//    }
 
-        Registration registration = entity.getRegistration();
-        RegistrationDTO registrationDTO = modelMapper.map(registration, RegistrationDTO.class);
+    @GetMapping
+    public Page<MeetupDTO> find(MeetupFilterDTO dto, Pageable pageRequest) {
+        Page<Meetup> result = meetupService.find(dto, pageRequest);
+        List<MeetupDTO> meetups = result
+                .getContent()
+                .stream()
+                .map(entity -> {
 
-        MeetupDTO meetupDTO = modelMapper.map(entity, MeetupDTO.class);
-        meetupDTO.setRegistration(registrationDTO);
-        return meetupDTO;
+                    List<Registration> registrations = entity.getRegistrations();
 
-      }).collect(Collectors.toList());
-    return new PageImpl<MeetupDTO>(meetups, pageRequest, result.getTotalElements());
-  }
+                    List<RegistrationDTO> registrationDTOS = registrations.stream()
+                            .map(registration -> modelMapper.map(registration, RegistrationDTO.class))
+                            .collect(Collectors.toList());
+
+                    MeetupDTO meetupDTO = modelMapper.map(entity, MeetupDTO.class);
+                    meetupDTO.setRegistrations(registrationDTOS);
+
+                    return meetupDTO;
+
+                }).collect(Collectors.toList());
+        return new PageImpl<MeetupDTO>(meetups, pageRequest, result.getTotalElements());
+
+        // ENDPOINT - alteração do meetup
+        // verificar se o meetup existe
+        // - // nos testes criar um teste que o meetup existe
+        // - // nos testes criar um teste que o meetup NÃO existe
+
+
+        // ENDPOINT - deleção do meetup
+    }
 }

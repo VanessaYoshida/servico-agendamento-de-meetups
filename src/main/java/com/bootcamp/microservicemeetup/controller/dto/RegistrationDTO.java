@@ -30,4 +30,10 @@ public class RegistrationDTO {
   @JsonSerialize(using = LocalDateSerializer.class)
   @JsonDeserialize(using = LocalDateDeserializer.class)
   private LocalDate dateOfRegistration;
+
+  @NotNull
+  private Integer personId;
+
+  @NotNull
+  private Integer meetupId;
 }

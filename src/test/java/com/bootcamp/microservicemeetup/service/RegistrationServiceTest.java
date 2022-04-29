@@ -45,7 +45,8 @@ public class RegistrationServiceTest {
         // cenario
         Registration registration = createValidRegistration();
 
-        // excucao
+        // execucao
+        Mockito.when(repository.existsByPersonId(Mockito.anyString())).thenReturn(false);
         Mockito.when(repository.save(registration)).thenReturn(createValidRegistration());
 
         Registration savedRegistration = registrationService.save(registration);
@@ -54,7 +55,7 @@ public class RegistrationServiceTest {
         assertThat(savedRegistration.getId()).isEqualTo(101);
         assertThat(savedRegistration.getName()).isEqualTo("Vanessa Yoshida");
         assertThat(savedRegistration.getDateOfRegistration()).isEqualTo(LocalDate.now());
-
+        assertThat(savedRegistration.getPersonId()).isEqualTo("001");
     }
 
     private Registration createValidRegistration() {
@@ -62,15 +63,18 @@ public class RegistrationServiceTest {
                 .id(101)
                 .name("Vanessa Yoshida")
                 .dateOfRegistration(LocalDate.now())
+                .personId("001")
                 .build();
     }
 
     @Test
     @DisplayName("Should throw business error when thy " +
             "to save a new registration with a registration duplicated")
-    public void shouldNotSAveAsRegistrationDuplicated() {
+    public void shouldNotSaveAsRegistrationDuplicated() {
 
         Registration registration = createValidRegistration();
+
+        Mockito.when(repository.existsByPersonId(Mockito.any())).thenReturn(true);
 
         Throwable exception = Assertions.catchThrowable( () -> registrationService.save(registration));
         assertThat(exception)
@@ -98,7 +102,8 @@ public class RegistrationServiceTest {
         assertThat(foundRegistration.isPresent()).isTrue();
         assertThat(foundRegistration.get().getId()).isEqualTo(id);
         assertThat(foundRegistration.get().getName()).isEqualTo(registration.getName());
-        assertThat(foundRegistration.get().getDateOfRegistration()).isEqualTo(registration.getDateOfRegistration());;
+        assertThat(foundRegistration.get().getDateOfRegistration()).isEqualTo(registration.getDateOfRegistration());
+        assertThat(foundRegistration.get().getPersonId()).isEqualTo(registration.getPersonId());
 
     }
 
@@ -115,7 +120,7 @@ public class RegistrationServiceTest {
     }
 
     @Test
-    @DisplayName("Should delete an student")
+    @DisplayName("Should delete an registration")
     public void deleteRegistrationTest() {
 
         Registration registration = Registration.builder().id(11).build();
@@ -145,6 +150,7 @@ public class RegistrationServiceTest {
         assertThat(registration.getId()).isEqualTo(updatedRegistration.getId());
         assertThat(registration.getName()).isEqualTo(updatedRegistration.getName());
         assertThat(registration.getDateOfRegistration()).isEqualTo(updatedRegistration.getDateOfRegistration());
+        assertThat(registration.getPersonId()).isEqualTo(updatedRegistration.getPersonId());
 
     }
 
@@ -174,6 +180,24 @@ public class RegistrationServiceTest {
     }
 
     @Test
+    @DisplayName("Should get an Registration model by registration attribute")
+    public void getRegistrationByRegistrationAtrb() {
+
+        String registrationAttribute = "1234";
+
+        Mockito.when(repository.findByPersonId(registrationAttribute))
+                .thenReturn(Optional.of(Registration.builder().id(11).personId(registrationAttribute).build()));
+
+        Optional<Registration> registration  = registrationService.getRegistrationByRegistrationAttribute(registrationAttribute);
+
+        assertThat(registration.isPresent()).isTrue();
+        assertThat(registration.get().getId()).isEqualTo(11);
+        assertThat(registration.get().getPersonId()).isEqualTo(registrationAttribute);
+
+        Mockito.verify(repository, Mockito.times(1)).findByPersonId(registrationAttribute);
+    }
+
+    @Test
     @DisplayName("Should get all Registration")
     public void getAllRegistration() {
 
@@ -191,7 +215,7 @@ public class RegistrationServiceTest {
 
         // assert
         assertThat(foundRegistration.listIterator());
-        assertEquals(2, foundRegistration.size(), "Same amount of Jedi found");
+        assertEquals(2, foundRegistration.size(), "Same amount of Register found");
     }
 
 }

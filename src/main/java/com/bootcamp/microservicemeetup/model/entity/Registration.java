@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import javax.validation.constraints.NotEmpty;
 
 import javax.persistence.*;
-import java.util.List;
 import java.time.LocalDate;
 
 @Data
@@ -19,15 +19,17 @@ public class Registration {
     @Id
     @Column(name = "registration_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Integer id; //número da inscrição
 
     @Column(name = "person_name")
     private String name;
 
+    @Column(name = "person_id")
+    private String personId;
+
     @Column(name = "date_of_registration")
     private LocalDate dateOfRegistration;
-
-    @OneToMany(mappedBy = "registration")
-    private List<Meetup> meetups;
+    @ManyToOne
+    private Meetup meetup;
 
 }

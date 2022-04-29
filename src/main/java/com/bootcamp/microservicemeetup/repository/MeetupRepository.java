@@ -10,12 +10,15 @@ import org.springframework.data.repository.query.Param;
 
 public interface MeetupRepository extends JpaRepository<Meetup, Integer> {
 
-  @Query( value = " select l from Meetup as l join l.registration as b where b.id = :registrationId or l.event =:event ")
-  Page<Meetup> findByRegistrationOnMeetup(
-          @Param("registrationId") Integer registrationId,
+  @Query( value = " select l from Meetup as l " +
+          "join l.registrations as b " +
+          "where b.personId = :personId " +
+          "or l.event = :event ")
+  Page<Meetup>findByPersonIdOnMeetup(
+          @Param("personId") String personId,
           @Param("event") String event,
           Pageable pageable
   );
 
-  Page<Meetup> findByRegistration(Registration registration, Pageable pageable);
+  Page<Meetup> findByRegistrations(Registration registration, Pageable pageable );
 }

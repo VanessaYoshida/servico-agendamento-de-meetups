@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.util.List;
 
 import javax.persistence.*;
 
@@ -21,14 +22,15 @@ public class Meetup {
   @Column
   private String event;
 
-  @JoinColumn(name = "id_registration")
-  @ManyToOne
-  // mtos meetups para 1 registro - registro só pode ir em um meetup
-  private Registration registration;
+  @OneToMany(mappedBy = "meetup", cascade = CascadeType.ALL)
+  private List<Registration> registrations;
 
   @Column
   private String meetupDate;
 
   @Column
   private Boolean registered;
+
+  @Column(name = "owner_id")
+  private Integer ownerId;
 }

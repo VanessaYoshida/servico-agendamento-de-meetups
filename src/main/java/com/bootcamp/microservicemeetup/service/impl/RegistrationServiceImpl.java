@@ -22,16 +22,19 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     public Registration save(Registration registration) {
+        if (repository.existsByPersonId(registration.getPersonId())) {
+            throw new BusinessException("Registration already created");
+        }
+
         return repository.save(registration);
     }
 
-    @Override
     public Optional<Registration> getRegistrationById(Integer id) {
         return this.repository.findById(id);
     }
 
     // inserir mais uma validacao no delete();
-    @Override
+
     public void delete(Registration registration) {
         if (registration == null || registration.getId() == null) {
             throw new IllegalArgumentException("Registration id cannot be null");
@@ -40,7 +43,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     // inserir mais uma validacao no save();
-    @Override
+
     public Registration update(Registration registration) {
         if (registration == null || registration.getId() == null) {
             throw new IllegalArgumentException("Registration id cannot be null");
@@ -48,7 +51,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         return this.repository.save(registration);
     }
 
-    @Override
+
     public Page<Registration> find(Registration filter, Pageable pageRequest) {
         Example<Registration> example = Example.of(filter,
                 ExampleMatcher
@@ -60,9 +63,12 @@ public class RegistrationServiceImpl implements RegistrationService {
         return repository.findAll(example, pageRequest);
     }
 
-    @Override
+
     public List<Registration> getRegistrationAll() {
         return this.repository.findAll();
     }
 
+    public Optional<Registration> getRegistrationByRegistrationAttribute(String registrationAttribute) {
+        return repository.findByPersonId(registrationAttribute);
+    }
 }

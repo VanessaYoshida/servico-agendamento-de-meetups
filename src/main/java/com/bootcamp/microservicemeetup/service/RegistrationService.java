@@ -21,4 +21,6 @@ public interface RegistrationService {
 
     List<Registration> getRegistrationAll();
 
+    Optional<Registration> getRegistrationByRegistrationAttribute(String registrationAttribute);
+
 }
