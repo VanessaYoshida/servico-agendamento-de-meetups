@@ -2,19 +2,16 @@ package com.bootcamp.microservicemeetup.controller.resource;
 
 import com.bootcamp.microservicemeetup.controller.dto.RegistrationDTO;
 import com.bootcamp.microservicemeetup.model.entity.Registration;
+import com.bootcamp.microservicemeetup.model.entity.Meetup;
 import com.bootcamp.microservicemeetup.service.RegistrationService;
-import org.modelmapper.ModelMapper;
+import com.bootcamp.microservicemeetup.service.MeetupService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import com.bootcamp.microservicemeetup.model.entity.Meetup;
-import com.bootcamp.microservicemeetup.service.MeetupService;
-import java.util.ArrayList;
-import java.util.Optional;
-
+import org.modelmapper.ModelMapper;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,12 +19,9 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/registration")
 public class RegistrationController {
-
   private RegistrationService registrationService;
-
   private final MeetupService meetupService;
   private ModelMapper modelMapper;
-
 
   public RegistrationController(RegistrationService registrationService, MeetupService meetupService, ModelMapper modelMapper) {
     this.registrationService = registrationService;
@@ -39,10 +33,9 @@ public class RegistrationController {
   @ResponseStatus(HttpStatus.CREATED)
   public RegistrationDTO create(@RequestBody @Valid RegistrationDTO dto) {
 
-    //verificar se o meetup existe
-    Meetup meetup = meetupService.getById(dto.getMeetupId())
+    //verificando se o meetup existe
+    meetupService.getById(dto.getMeetupId())
             .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST));
-    // falta criar teste com o meetup que existe e que não
 
     Registration entity = modelMapper.map(dto, Registration.class);
     entity = registrationService.save(entity);

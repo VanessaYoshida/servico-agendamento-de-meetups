@@ -1,17 +1,12 @@
 package com.bootcamp.microservicemeetup.controller;
 
 import com.bootcamp.microservicemeetup.controller.resource.RegistrationController;
-import com.bootcamp.microservicemeetup.exception.BusinessException;
 import com.bootcamp.microservicemeetup.controller.dto.RegistrationDTO;
 import com.bootcamp.microservicemeetup.model.entity.Registration;
+import com.bootcamp.microservicemeetup.model.entity.Meetup;
 import com.bootcamp.microservicemeetup.service.RegistrationService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
-import org.mockito.Mockito;
+import com.bootcamp.microservicemeetup.service.MeetupService;
+import com.bootcamp.microservicemeetup.exception.BusinessException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -25,22 +20,24 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import com.bootcamp.microservicemeetup.model.entity.Meetup;
-import com.bootcamp.microservicemeetup.service.MeetupService;
-
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Optional;
-
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.BDDMockito;
+import org.mockito.Mockito;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @WebMvcTest(controllers = {RegistrationController.class})
 @AutoConfigureMockMvc
-
 public class RegistrationControllerTest {
 
     static String REGISTRATION_API = "/api/registration";
@@ -58,7 +55,6 @@ public class RegistrationControllerTest {
     @DisplayName("Should create a registration with success")
     public void createRegistrationTest() throws Exception {
 
-        //cenario
         RegistrationDTO registrationDTOBuilder = createNewRegistration();
         Registration savedRegistration = Registration.builder().id(101)
                 .name("Vanessa Yoshida")
@@ -70,7 +66,6 @@ public class RegistrationControllerTest {
         BDDMockito.given(meetupService.getById(anyInt())).
                 willReturn(Optional.of(meetup));
 
-        //execucao
         BDDMockito.given(registrationService.save(any(Registration.class))).willReturn(savedRegistration);
 
         String json = new ObjectMapper().writeValueAsString(registrationDTOBuilder);
@@ -81,7 +76,6 @@ public class RegistrationControllerTest {
                 .accept(MediaType.APPLICATION_JSON)
                 .content(json);
 
-        //Assert
         mockMvc
                 .perform(request)
                 .andExpect(status().isCreated())
@@ -155,7 +149,6 @@ public class RegistrationControllerTest {
                 .andExpect(jsonPath("id").value(101))
                 .andExpect(jsonPath("name").value(createNewRegistration().getName()))
                 .andExpect(jsonPath("dateOfRegistration").value(createNewRegistration().getDateOfRegistration().toString()));
-
     }
 
     @Test
@@ -189,7 +182,6 @@ public class RegistrationControllerTest {
 
         String queryString = String.format("?name=%s&page=0&size=100", registration.getPersonId(), registration.getDateOfRegistration());
 
-
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .get(REGISTRATION_API.concat(queryString))
                 .accept(MediaType.APPLICATION_JSON);
@@ -201,7 +193,6 @@ public class RegistrationControllerTest {
                 .andExpect(jsonPath("totalElements"). value(1))
                 .andExpect(jsonPath("pageable.pageSize"). value(100))
                 .andExpect(jsonPath("pageable.pageNumber"). value(0));
-
     }
 
     @Test
@@ -226,7 +217,6 @@ public class RegistrationControllerTest {
 
         BDDMockito.given(registrationService
                 .getRegistrationById(anyInt())).willReturn(Optional.empty());
-
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
                 .delete(REGISTRATION_API.concat("/" + 1))
@@ -302,5 +292,4 @@ public class RegistrationControllerTest {
         return  RegistrationDTO.builder().id(101).name("Vanessa Yoshida").dateOfRegistration(LocalDate.now()).personId(1)
                 .meetupId(1).build();
     }
-
 }

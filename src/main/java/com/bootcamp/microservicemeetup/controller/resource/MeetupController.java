@@ -7,33 +7,26 @@ import com.bootcamp.microservicemeetup.model.entity.Meetup;
 import com.bootcamp.microservicemeetup.model.entity.Registration;
 import com.bootcamp.microservicemeetup.service.MeetupService;
 import com.bootcamp.microservicemeetup.service.RegistrationService;
-import java.util.List;
-import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
+import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @RestController
 @RequestMapping("/api/meetups")
 @RequiredArgsConstructor
 public class MeetupController {
-
     private final MeetupService meetupService;
-    private final RegistrationService registrationService;
     private final ModelMapper modelMapper;
-
-
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -48,14 +41,15 @@ public class MeetupController {
         return entity.getId();
     }
 
-//    @GetMapping("{id}")
-//    @ResponseStatus(HttpStatus.OK)
-//    public RegisteredMeetupDTO get(@PathVariable Integer id) {
-//        return meetupService
-//                .getById(id)
-//                .map(meetup ->  new RegisteredMeetupDTO(meetup.getRegistered()))
-//                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
-//    }
+    @GetMapping("{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public MeetupDTO get(@PathVariable Integer id) {
+
+        return meetupService
+                .getById(id)
+                .map(meetup -> modelMapper.map(meetup, MeetupDTO.class))
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
 
     @GetMapping
     public Page<MeetupDTO> find(MeetupFilterDTO dto, Pageable pageRequest) {
@@ -78,13 +72,29 @@ public class MeetupController {
 
                 }).collect(Collectors.toList());
         return new PageImpl<MeetupDTO>(meetups, pageRequest, result.getTotalElements());
+    }
 
-        // ENDPOINT - alteração do meetup
-        // verificar se o meetup existe
-        // - // nos testes criar um teste que o meetup existe
-        // - // nos testes criar um teste que o meetup NÃO existe
+    @PutMapping("{id}")
+    public MeetupDTO update(@PathVariable Integer id, MeetupDTO meetupDTO) {
 
+        return meetupService.getById(id).map(meetup -> {
+            meetup.setEvent(meetupDTO.getEvent());
+            meetup.setMeetupDate(meetupDTO.getDate());
+            meetup.setOwnerId(meetupDTO.getOwnerId());
+            meetup = meetupService.update(meetup);
 
-        // ENDPOINT - deleção do meetup
+            return modelMapper.map(meetup, MeetupDTO.class);
+        }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<?> deleteByMeetupEvent(@RequestBody Meetup meetup) {
+
+        Meetup meetupId = meetupService.getById(meetup.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        meetupService.delete(meetupId);
+
+        return ResponseEntity.ok().build();
     }
 }

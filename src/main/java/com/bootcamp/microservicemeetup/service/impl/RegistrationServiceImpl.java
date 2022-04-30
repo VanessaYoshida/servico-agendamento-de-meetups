@@ -8,7 +8,6 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -25,15 +24,12 @@ public class RegistrationServiceImpl implements RegistrationService {
         if (repository.existsByPersonId(registration.getPersonId())) {
             throw new BusinessException("Registration already created");
         }
-
         return repository.save(registration);
     }
 
     public Optional<Registration> getRegistrationById(Integer id) {
         return this.repository.findById(id);
     }
-
-    // inserir mais uma validacao no delete();
 
     public void delete(Registration registration) {
         if (registration == null || registration.getId() == null) {
@@ -42,15 +38,12 @@ public class RegistrationServiceImpl implements RegistrationService {
         this.repository.delete(registration);
     }
 
-    // inserir mais uma validacao no save();
-
     public Registration update(Registration registration) {
         if (registration == null || registration.getId() == null) {
             throw new IllegalArgumentException("Registration id cannot be null");
         }
         return this.repository.save(registration);
     }
-
 
     public Page<Registration> find(Registration filter, Pageable pageRequest) {
         Example<Registration> example = Example.of(filter,
@@ -62,7 +55,6 @@ public class RegistrationServiceImpl implements RegistrationService {
 
         return repository.findAll(example, pageRequest);
     }
-
 
     public List<Registration> getRegistrationAll() {
         return this.repository.findAll();

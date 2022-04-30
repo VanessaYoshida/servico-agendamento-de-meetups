@@ -21,4 +21,7 @@ public interface MeetupRepository extends JpaRepository<Meetup, Integer> {
   );
 
   Page<Meetup> findByRegistrations(Registration registration, Pageable pageable );
+
+  Page<Meetup> findByEvent(Integer meetupDTO, Pageable pageable );
+
 }

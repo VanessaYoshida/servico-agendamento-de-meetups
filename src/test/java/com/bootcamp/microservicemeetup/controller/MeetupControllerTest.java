@@ -1,5 +1,6 @@
 package com.bootcamp.microservicemeetup.controller;
 
+import com.bootcamp.microservicemeetup.controller.dto.MeetupFilterDTO;
 import com.bootcamp.microservicemeetup.controller.resource.MeetupController;
 import com.bootcamp.microservicemeetup.exception.BusinessException;
 import com.bootcamp.microservicemeetup.controller.dto.MeetupDTO;
@@ -24,19 +25,18 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
 @WebMvcTest(controllers = {MeetupController.class})
 @AutoConfigureMockMvc
-
 public class MeetupControllerTest {
 
     static final String MEETUP_API = "/api/meetups";
@@ -53,16 +53,10 @@ public class MeetupControllerTest {
     @MockBean
     MeetupRepository meetupRepository;
 
-//    @BeforeEach
-//    public void setUp() {
-//        this.meetupService = new MeetupServiceImpl(meetupRepository);
-//    }
-
     @Test
     @DisplayName("Should register on a meetup")
     public void createMeetupTest() throws Exception {
 
-        // quando enviar uma requisicao para esse registration precisa ser encontrado um valor que tem esse usuario
         MeetupDTO dto = MeetupDTO.builder()
                 .event("Womakerscode Dados")
                 .date("20/06/2022")
@@ -93,11 +87,9 @@ public class MeetupControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json);
 
-        // Aqui o que retorna é o id do registro no meetup
         mockMvc.perform(request)
                 .andExpect(status().isCreated())
                 .andExpect(content().string("11"));
-
     }
 
     @Test
@@ -112,10 +104,8 @@ public class MeetupControllerTest {
                 .build();
         String json = new ObjectMapper().writeValueAsString(dto);
 
-        // Procura na base se ja tem algum registration para esse meetup
         BDDMockito.given(meetupService.save(Mockito.any(Meetup.class)))
                 .willThrow(new BusinessException("Meetup already enrolled"));
-
 
         MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.post(MEETUP_API)
                 .accept(MediaType.APPLICATION_JSON)
@@ -130,91 +120,80 @@ public class MeetupControllerTest {
     @DisplayName("Should get meetup registration")
     public void getMeetupTest() throws Exception {
 
-        Integer idRegistration = 44;
-        Registration registration = Registration.builder().id(idRegistration).build();
+        Integer idMeetup = 44;
+
         Meetup meetup = Meetup.builder()
-                .id(idRegistration)
+                .id(idMeetup)
                 .event("Womakerscode Dados")
                 .meetupDate("20/06/2022")
                 .registered(true)
                 .build();
 
-        BDDMockito.given(meetupService.getById(idRegistration)).willReturn(Optional.of(meetup));
+        String json = new ObjectMapper().writeValueAsString(meetup);
+
+        BDDMockito.given(meetupService.getById(idMeetup)).willReturn(Optional.of(meetup));
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .get(MEETUP_API.concat("/" + idRegistration))
-                .accept(MediaType.APPLICATION_JSON);
+                .get(MEETUP_API.concat("/" + idMeetup))
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json);
 
-//        RegisteredMeetupDTO registered = RegisteredMeetupDTO.builder().registered(true).build();
-//
-//        mockMvc.perform(request)
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("registered").value(registered.getRegistered()));
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("event").value("Womakerscode Dados"))
+                .andExpect(jsonPath("date").value("20/06/2022"));
     }
 
     @Test
     @DisplayName("Should return empty when get an meetup registration by id when doesn't exists")
     public void meetupRegistrationNotFound() throws Exception {
 
-        Integer idRegistration = 44;
+        Integer idMeetup = 44;
 
-        MeetupDTO.builder()
+        Meetup meetup = Meetup.builder()
+                .id(idMeetup)
                 .event("Womakerscode Dados")
-                .date("20/06/2022")
-                .ownerId(1)
-                .registrations(null)
+                .meetupDate("20/06/2022")
+                .registered(true)
                 .build();
 
-        Registration.builder().id(idRegistration).build();
+        String json = new ObjectMapper().writeValueAsString(meetup);
 
-        BDDMockito.given(meetupService.getById(idRegistration)).willReturn(Optional.empty());
+        BDDMockito.given(meetupService.getById(idMeetup)).willReturn(Optional.of(meetup));
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
-                .get(MEETUP_API.concat("/" + idRegistration))
-                .accept(MediaType.APPLICATION_JSON);
+                .get(MEETUP_API.concat("/" + 45))
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json);
 
         mockMvc.perform(request)
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    @DisplayName("Should delete the meetup")
+    public void deleteMeetup() throws Exception {
 
-//    @Test
-//    @DisplayName("Should delete the meetup registration")
-//    public void deleteMeetupRegistration() throws Exception {
-//        MeetupDTO dto = MeetupDTO.builder().registrationAttribute("234").event("Womakerscode Dados").build();
-//        String json = new ObjectMapper().writeValueAsString(dto);
-//
-//        Registration registration = Registration.builder().id(11).build();
-//
-//        BDDMockito.given(registrationService.getRegistrationByRegistrationAttribute("234")).
-//                willReturn(Optional.of(registration));
+        Integer idMeetup = 44;
 
-//        Meetup meetup = Meetup.builder().id(11).event("Womakerscode Dados").registration(registration).meetupDate("10/10/2022").build();
+        Meetup meetup = Meetup.builder()
+                .id(idMeetup)
+                .event("Womakerscode Dados")
+                .meetupDate("20/06/2022")
+                .registered(true)
+                .build();
+        String json = new ObjectMapper().writeValueAsString(meetup);
 
-//        BDDMockito.given(meetupService.getById(anyInt())).willReturn(Optional.of(meetup));
+        BDDMockito.given(meetupService.getById(idMeetup)).willReturn(Optional.of(meetup));
 
-//        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-//                .delete(MEETUP_API.concat("/" + 11))
-//                .accept(MediaType.APPLICATION_JSON);
-//
-//        mockMvc.perform(requestBuilder)
-//                .andExpect(status().isNoContent());
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.delete(MEETUP_API)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json);
 
-//        Integer idRegistration = 44;
-//
-//        Registration registration = Registration.builder().id(idRegistration).registration("234").build();
-//
-//        Meetup meetup = Meetup.builder().id(idRegistration).event("Womakerscode Dados").registration(registration).meetupDate("10/10/2022").registered(true).build();
-//
-//        BDDMockito.given(meetupService.getById(anyInt())).willReturn(Optional.of(meetup));
-//
-//        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders
-//                .delete(MEETUP_API.concat("/" + 1))
-//                .accept(MediaType.APPLICATION_JSON);
-//
-//        mockMvc.perform(requestBuilder)
-//                .andExpect(status().isNoContent());
-//    }
-
-
+        mockMvc.perform(request)
+                .andExpect(status().isOk());
+    }
 }
