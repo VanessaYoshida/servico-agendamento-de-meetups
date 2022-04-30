@@ -9,10 +9,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
 import java.time.LocalDate;
 import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(SpringExtension.class)
@@ -40,7 +38,6 @@ public class RegistrationRepositoryTest {
     @Test
     @DisplayName("Should return false when doesn't exists an registration_attribute with a registration already created.")
     public void returnFalseWhenRegistrationAttributeDoesntExists() {
-
         String registration = "234";
 
         boolean exists = repository.existsByPersonId(registration);
@@ -51,7 +48,6 @@ public class RegistrationRepositoryTest {
     @Test
     @DisplayName("Should get an registration by id")
     public void findByIdTest() {
-
         Registration registration_attribute = createNewRegistration("234");
         entityManager.persist(registration_attribute);
 
@@ -67,13 +63,11 @@ public class RegistrationRepositoryTest {
         Registration savedRegistration = repository.save(registration_attribute);
 
         assertThat(savedRegistration.getId()).isNotNull();
-
     }
 
     @Test
     @DisplayName("Should delete and registration from the base")
     public void deleteRegistation() {
-
         Registration registration_attribute = createNewRegistration("234");
         entityManager.persist(registration_attribute);
 

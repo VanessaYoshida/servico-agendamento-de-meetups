@@ -1,5 +1,6 @@
 package com.bootcamp.microservicemeetup.service;
 
+import com.bootcamp.microservicemeetup.controller.dto.MeetupDTO;
 import com.bootcamp.microservicemeetup.controller.dto.MeetupFilterDTO;
 import com.bootcamp.microservicemeetup.model.entity.Meetup;
 import com.bootcamp.microservicemeetup.model.entity.Registration;
@@ -20,6 +21,8 @@ public interface MeetupService {
 
   Page<Meetup> find(MeetupFilterDTO filterDTO, Pageable pageable);
 
-  Page<Meetup> getRegistrationsByMeetup(Registration registration, Pageable pageable);
+//  Page<Meetup> getRegistrationsByMeetup(Registration registration, Pageable pageable);
+//
+//  Page<Meetup> getMeetupByEvent(Meetup meetup, Pageable pageable);
 
 }
