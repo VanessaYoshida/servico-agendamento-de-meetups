@@ -38,7 +38,7 @@ public class MeetupServiceImpl implements MeetupService {
     @Override
     public Meetup update(Meetup meetup) {
         if (meetup == null || meetup.getId() == null) {
-            throw new IllegalArgumentException("Registration id cannot be null");
+            throw new IllegalArgumentException("Meetup id cannot be null");
         }
         return this.repository.save(meetup);
     }
