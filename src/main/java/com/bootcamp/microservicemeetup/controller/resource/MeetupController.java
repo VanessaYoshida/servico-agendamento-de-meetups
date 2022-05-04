@@ -52,8 +52,9 @@ public class MeetupController {
     }
 
     @GetMapping
-    public Page<MeetupDTO> find(MeetupFilterDTO dto, Pageable pageRequest) {
-        Page<Meetup> result = meetupService.find(dto, pageRequest);
+    public Page<MeetupDTO> find(MeetupDTO dto, Pageable pageRequest) {
+        Meetup meetup = modelMapper.map(dto, Meetup.class);
+        Page<Meetup> result = meetupService.getRegistrationsByMeetup(meetup, pageRequest);
         List<MeetupDTO> meetups = result
                 .getContent()
                 .stream()
@@ -91,7 +92,8 @@ public class MeetupController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> deleteByMeetupEvent(@RequestBody Meetup meetup) {
 
-        Meetup meetupId = meetupService.getById(meetup.getId()).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        Meetup meetupId = meetupService.getById(meetup.getId()).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         meetupService.delete(meetupId);
 

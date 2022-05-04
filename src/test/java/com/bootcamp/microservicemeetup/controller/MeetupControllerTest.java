@@ -1,12 +1,10 @@
 package com.bootcamp.microservicemeetup.controller;
 
-import com.bootcamp.microservicemeetup.controller.dto.MeetupFilterDTO;
+import com.bootcamp.microservicemeetup.controller.dto.MeetupDTO;
 import com.bootcamp.microservicemeetup.controller.resource.MeetupController;
 import com.bootcamp.microservicemeetup.exception.BusinessException;
-import com.bootcamp.microservicemeetup.controller.dto.MeetupDTO;
 import com.bootcamp.microservicemeetup.model.entity.Meetup;
 import com.bootcamp.microservicemeetup.model.entity.Registration;
-import com.bootcamp.microservicemeetup.repository.MeetupRepository;
 import com.bootcamp.microservicemeetup.service.MeetupService;
 import com.bootcamp.microservicemeetup.service.RegistrationService;
 import org.junit.jupiter.api.DisplayName;
@@ -26,12 +24,12 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 import java.util.List;
 import java.util.Optional;
+
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
@@ -49,9 +47,6 @@ public class MeetupControllerTest {
 
     @MockBean
     MeetupService meetupService;
-
-    @MockBean
-    MeetupRepository meetupRepository;
 
     @Test
     @DisplayName("Should register on a meetup")
@@ -195,5 +190,67 @@ public class MeetupControllerTest {
 
         mockMvc.perform(request)
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Should return resource not found when no meetup is found to delete")
+    public void tryDeleteMeetupThatDontExists() throws Exception {
+
+        Integer idMeetup = 44;
+
+        Meetup meetup = Meetup.builder()
+                .id(idMeetup)
+                .event("Womakerscode Dados")
+                .meetupDate("20/06/2022")
+                .registered(true)
+                .build();
+        String json = new ObjectMapper().writeValueAsString(meetup);
+
+        meetupService.delete(meetup);
+        BDDMockito.given(meetupService.getById(idMeetup)).willReturn(Optional.empty());
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.delete(MEETUP_API)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        mockMvc.perform(request)
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("Should update when meetup info")
+    public void updateMeetupTest() throws Exception {
+
+        String json = new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(createNewMeetup());
+
+        Integer idMeetup = 44;
+
+        Meetup meetup = Meetup.builder()
+                .id(idMeetup)
+                .event("Womakerscode Dados")
+                .meetupDate("20/06/2022")
+                .registered(true)
+                .build();
+
+        BDDMockito.given(meetupService.getById(idMeetup)).willReturn(Optional.of(meetup));
+
+        Meetup meetupUpdated = meetup;
+        meetupUpdated.setEvent("Womakercode Java");
+
+        BDDMockito.given(meetupService.update(meetup)).willReturn(meetupUpdated);
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.put(MEETUP_API.concat("/" + idMeetup))
+                .contentType(json)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk());
+    }
+
+    private Meetup createNewMeetup() {
+        return Meetup.builder().id(101).event("Womakerscode Java").meetupDate("25/06/2022").registered(true)
+                .build();
     }
 }
