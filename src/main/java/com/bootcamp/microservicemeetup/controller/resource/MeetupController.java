@@ -1,6 +1,7 @@
 package com.bootcamp.microservicemeetup.controller.resource;
 
 import com.bootcamp.microservicemeetup.controller.dto.MeetupDTO;
+import com.bootcamp.microservicemeetup.controller.dto.MeetupUpdateDTO;
 import com.bootcamp.microservicemeetup.controller.dto.RegistrationDTO;
 import com.bootcamp.microservicemeetup.model.entity.Meetup;
 import com.bootcamp.microservicemeetup.model.entity.Registration;
@@ -81,15 +82,15 @@ public class MeetupController {
     }
 
     @PutMapping("{id}")
-    public MeetupDTO update(@PathVariable Integer id, MeetupDTO meetupDTO) {
+    public MeetupUpdateDTO update(@PathVariable Integer id, @RequestBody MeetupUpdateDTO meetupUpdateDTO) {
 
         return meetupService.getById(id).map(meetup -> {
-            meetup.setEvent(meetupDTO.getEvent());
-            meetup.setMeetupDate(meetupDTO.getDate());
-            meetup.setOwnerId(meetupDTO.getOwnerId());
+            meetup.setEvent(meetupUpdateDTO.getEvent());
+            meetup.setMeetupDate(meetupUpdateDTO.getDate());
+            meetup.setOwnerId(meetupUpdateDTO.getOwnerId());
             meetup = meetupService.update(meetup);
 
-            return modelMapper.map(meetup, MeetupDTO.class);
+            return modelMapper.map(meetup, MeetupUpdateDTO.class);
         }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
