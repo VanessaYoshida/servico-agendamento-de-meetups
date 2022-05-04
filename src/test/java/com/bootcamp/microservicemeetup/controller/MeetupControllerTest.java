@@ -183,7 +183,7 @@ public class MeetupControllerTest {
 
         BDDMockito.given(meetupService.getById(idMeetup)).willReturn(Optional.of(meetup));
 
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.delete(MEETUP_API)
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.delete(MEETUP_API.concat("/" + idMeetup))
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json);
@@ -209,7 +209,7 @@ public class MeetupControllerTest {
         meetupService.delete(meetup);
         BDDMockito.given(meetupService.getById(idMeetup)).willReturn(Optional.empty());
 
-        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.delete(MEETUP_API)
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.delete(MEETUP_API.concat("/" + idMeetup))
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json);

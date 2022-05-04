@@ -1,25 +1,30 @@
 package com.bootcamp.microservicemeetup.controller.resource;
 
 import com.bootcamp.microservicemeetup.controller.dto.MeetupDTO;
-import com.bootcamp.microservicemeetup.controller.dto.MeetupFilterDTO;
 import com.bootcamp.microservicemeetup.controller.dto.RegistrationDTO;
 import com.bootcamp.microservicemeetup.model.entity.Meetup;
 import com.bootcamp.microservicemeetup.model.entity.Registration;
 import com.bootcamp.microservicemeetup.service.MeetupService;
-import com.bootcamp.microservicemeetup.service.RegistrationService;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import java.util.List;
-import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/meetups")
@@ -88,11 +93,11 @@ public class MeetupController {
         }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    @DeleteMapping
+    @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> deleteByMeetupEvent(@RequestBody Meetup meetup) {
+    public ResponseEntity<?> deleteByMeetupEvent(@PathVariable Integer id) {
 
-        Meetup meetupId = meetupService.getById(meetup.getId()).orElseThrow(() ->
+        Meetup meetupId = meetupService.getById(id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         meetupService.delete(meetupId);
