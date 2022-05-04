@@ -19,8 +19,6 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.web.server.ResponseStatusException;
 
-import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
-
 @RestController
 @RequestMapping("/api/meetups")
 @RequiredArgsConstructor
@@ -88,11 +86,11 @@ public class MeetupController {
         }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
-    @DeleteMapping
+    @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<?> deleteByMeetupEvent(@RequestBody Meetup meetup) {
+    public ResponseEntity<?> deleteByMeetupEvent(@PathVariable Integer id) {
 
-        Meetup meetupId = meetupService.getById(meetup.getId()).orElseThrow(() ->
+        Meetup meetupId = meetupService.getById(id).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         meetupService.delete(meetupId);
