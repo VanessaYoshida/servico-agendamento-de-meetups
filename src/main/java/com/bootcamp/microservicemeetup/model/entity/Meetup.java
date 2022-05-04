@@ -32,4 +32,5 @@ public class Meetup {
 
   @Column(name = "owner_id")
   private Integer ownerId;
+
 }
