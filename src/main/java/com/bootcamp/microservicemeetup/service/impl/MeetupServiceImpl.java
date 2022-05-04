@@ -1,10 +1,6 @@
 package com.bootcamp.microservicemeetup.service.impl;
 
-import com.bootcamp.microservicemeetup.controller.dto.MeetupDTO;
-import com.bootcamp.microservicemeetup.controller.dto.MeetupFilterDTO;
-import com.bootcamp.microservicemeetup.exception.BusinessException;
 import com.bootcamp.microservicemeetup.model.entity.Meetup;
-import com.bootcamp.microservicemeetup.model.entity.Registration;
 import com.bootcamp.microservicemeetup.repository.MeetupRepository;
 import com.bootcamp.microservicemeetup.service.MeetupService;
 import org.springframework.data.domain.Page;
@@ -23,9 +19,6 @@ public class MeetupServiceImpl implements MeetupService {
 
     @Override
     public Meetup save(Meetup meetup) {
-        if (repository.existsById(meetup.getId())) {
-            throw new BusinessException("Meetup already created");
-        }
         return repository.save(meetup);
     }
 
@@ -49,10 +42,6 @@ public class MeetupServiceImpl implements MeetupService {
         }
         return this.repository.save(meetup);
     }
-//    @Override
-//    public Page<Meetup> findByPersonIdOnMeetup(MeetupFilterDTO filterDTO, Pageable pageable) {
-//        return repository.findByPersonIdOnMeetup(filterDTO.getPersonId(), filterDTO.getEvent(), pageable);
-//    }
 
     @Override
     public Page<Meetup> getRegistrationsByMeetup(Meetup meetup, Pageable pageable) {
@@ -61,5 +50,10 @@ public class MeetupServiceImpl implements MeetupService {
         }
         return repository.findByMeetup(meetup.getEvent(), pageable);
     }
+
+    //    @Override
+//    public Page<Meetup> findByPersonIdOnMeetup(MeetupFilterDTO filterDTO, Pageable pageable) {
+//        return repository.findByPersonIdOnMeetup(filterDTO.getPersonId(), filterDTO.getEvent(), pageable);
+//    }
 
 }
