@@ -1,7 +1,7 @@
 package com.bootcamp.microservicemeetup.controller.resource;
 
 import com.bootcamp.microservicemeetup.controller.dto.MeetupDTO;
-import com.bootcamp.microservicemeetup.controller.dto.MeetupUpdateDTO;
+import com.bootcamp.microservicemeetup.controller.dto.MeetupDataDTO;
 import com.bootcamp.microservicemeetup.controller.dto.RegistrationDTO;
 import com.bootcamp.microservicemeetup.model.entity.Meetup;
 import com.bootcamp.microservicemeetup.model.entity.Registration;
@@ -36,11 +36,12 @@ public class MeetupController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    private Integer create(@RequestBody MeetupDTO meetupDTO) {
+    private Integer create(@RequestBody MeetupDataDTO meetupDataDTO) {
 
         Meetup entity = Meetup.builder()
-                .event(meetupDTO.getEvent())
-                .meetupDate(meetupDTO.getDate().toString())
+                .event(meetupDataDTO.getEvent())
+                .meetupDate(meetupDataDTO.getDate().toString())
+                .ownerId(meetupDataDTO.getOwnerId())
                 .build();
 
         entity = meetupService.save(entity);
@@ -82,7 +83,7 @@ public class MeetupController {
     }
 
     @PutMapping("{id}")
-    public MeetupUpdateDTO update(@PathVariable Integer id, @RequestBody MeetupUpdateDTO meetupUpdateDTO) {
+    public MeetupDataDTO update(@PathVariable Integer id, @RequestBody MeetupDataDTO meetupUpdateDTO) {
 
         return meetupService.getById(id).map(meetup -> {
             meetup.setEvent(meetupUpdateDTO.getEvent());
@@ -90,7 +91,7 @@ public class MeetupController {
             meetup.setOwnerId(meetupUpdateDTO.getOwnerId());
             meetup = meetupService.update(meetup);
 
-            return modelMapper.map(meetup, MeetupUpdateDTO.class);
+            return modelMapper.map(meetup, MeetupDataDTO.class);
         }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
