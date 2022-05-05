@@ -1,4 +1,4 @@
-package com.bootcamp.microservicemeetup.controller;
+package com.bootcamp.microservicemeetup.controller.resource;
 
 import com.bootcamp.microservicemeetup.controller.resource.RegistrationController;
 import com.bootcamp.microservicemeetup.controller.dto.RegistrationDTO;

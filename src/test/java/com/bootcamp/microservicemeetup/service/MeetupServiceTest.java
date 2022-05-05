@@ -58,23 +58,6 @@ public class MeetupServiceTest {
     }
 
     @Test
-    @DisplayName("Should throw business error when thy " +
-            "to save a new meetup with a meetup duplicated")
-    public void shouldNotSaveAsMeetupDuplicated() {
-
-        Meetup meetup = createNewMeetup();
-
-        Mockito.when(repository.existsById(any())).thenReturn(true);
-
-        Throwable exception = Assertions.catchThrowable( () -> meetupService.save(meetup));
-        assertThat(exception)
-                .isInstanceOf(BusinessException.class)
-                .hasMessage("Meetup already created");
-
-        Mockito.verify(repository, Mockito.never()).save(meetup);
-    }
-
-    @Test
     @DisplayName("Should get an Meetup by Id")
     public void getByMeetupIdTest() {
         Integer id = 11;
