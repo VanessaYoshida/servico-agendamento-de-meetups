@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,17 +61,10 @@ public class MeetupControllerTest {
                 .build();
         String json = new ObjectMapper().writeValueAsString(dto);
 
-        Registration registration = Registration.builder()
-                .id(11)
-                .build();
-
-        BDDMockito.given(registrationService.getRegistrationById(11)).
-                willReturn(Optional.of(registration));
-
         Meetup meetup = Meetup.builder()
                 .id(11)
                 .event("Womakerscode Dados")
-                .registrations(List.of(registration))
+                .registrations(Collections.emptyList())
                 .meetupDate("20/06/2022")
                 .ownerId(1)
                 .build();
@@ -221,7 +215,6 @@ public class MeetupControllerTest {
     @Test
     @DisplayName("Should update when meetup info")
     public void updateMeetupTest() throws Exception {
-
         String json = new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(createNewMeetup());
 
         Integer idMeetup = 44;
