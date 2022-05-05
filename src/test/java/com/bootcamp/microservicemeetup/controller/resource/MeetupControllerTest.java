@@ -2,11 +2,12 @@ package com.bootcamp.microservicemeetup.controller.resource;
 
 import com.bootcamp.microservicemeetup.controller.dto.MeetupDTO;
 import com.bootcamp.microservicemeetup.controller.dto.MeetupUpdateDTO;
-import com.bootcamp.microservicemeetup.controller.resource.MeetupController;
 import com.bootcamp.microservicemeetup.exception.BusinessException;
 import com.bootcamp.microservicemeetup.model.entity.Meetup;
+import com.bootcamp.microservicemeetup.model.entity.Registration;
 import com.bootcamp.microservicemeetup.service.MeetupService;
 import com.bootcamp.microservicemeetup.service.RegistrationService;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -24,7 +28,10 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -248,5 +255,47 @@ public class MeetupControllerTest {
     private MeetupUpdateDTO createMeetupUpdateDTO() {
         return MeetupUpdateDTO.builder().event("Womalercode").date("06-05-2022").ownerId(1)
                 .build();
+    }
+
+    @Test
+    @DisplayName("Should return meetup")
+    void testFindAndShouldMeetup() throws Exception {
+
+        Meetup meetup = Meetup.builder().event("WomakersCode").id(1).meetupDate("05-05-2022").ownerId(1)
+                .registrations(List.of(Registration.builder().id(1)
+                .personId("1").dateOfRegistration(LocalDate.now()).name("VanessaYoshida").build())).build();
+
+        BDDMockito.given(meetupService.getRegistrationsByMeetup(Mockito.any(Meetup.class),
+                Mockito.any(Pageable.class)))
+                .willReturn(new PageImpl<Meetup>(Arrays.asList(meetup), PageRequest.of(0, 10), 1));
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get(MEETUP_API.concat("?event=WoMakersCode&page=0&size=10"))
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("content", Matchers.hasSize(1)))
+                .andExpect(jsonPath("totalElements").value(1))
+                .andExpect(jsonPath("pageable.pageSize").value(10))
+                .andExpect(jsonPath("pageable.pageNumber").value(0));
+    }
+
+    @Test
+    @DisplayName("Should return empty list")
+    void testFindAndShouldReturnEmptyList() throws Exception {
+
+        BDDMockito.given(meetupService.getRegistrationsByMeetup(Mockito.any(Meetup.class),
+                        Mockito.any(Pageable.class)))
+                .willReturn(new PageImpl<Meetup>(Collections.emptyList(), PageRequest.of(0, 10), 0));
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get(MEETUP_API.concat("?event=WoMakersCode&page=0&size=10"))
+                .accept(MediaType.APPLICATION_JSON);
+
+        mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("content", Matchers.hasSize(0)))
+                .andExpect(jsonPath("totalElements").value(0))
+                .andExpect(jsonPath("pageable.pageSize").value(10))
+                .andExpect(jsonPath("pageable.pageNumber").value(0));
     }
 }
