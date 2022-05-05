@@ -1,10 +1,10 @@
 package com.bootcamp.microservicemeetup.controller;
 
 import com.bootcamp.microservicemeetup.controller.dto.MeetupDTO;
+import com.bootcamp.microservicemeetup.controller.dto.MeetupUpdateDTO;
 import com.bootcamp.microservicemeetup.controller.resource.MeetupController;
 import com.bootcamp.microservicemeetup.exception.BusinessException;
 import com.bootcamp.microservicemeetup.model.entity.Meetup;
-import com.bootcamp.microservicemeetup.model.entity.Registration;
 import com.bootcamp.microservicemeetup.service.MeetupService;
 import com.bootcamp.microservicemeetup.service.RegistrationService;
 import org.junit.jupiter.api.DisplayName;
@@ -25,7 +25,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -215,7 +214,7 @@ public class MeetupControllerTest {
     @Test
     @DisplayName("Should update when meetup info")
     public void updateMeetupTest() throws Exception {
-        String json = new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(createNewMeetup());
+        String json = new ObjectMapper().writeValueAsString(createMeetupUpdateDTO());
 
         Integer idMeetup = 44;
 
@@ -228,13 +227,12 @@ public class MeetupControllerTest {
 
         BDDMockito.given(meetupService.getById(idMeetup)).willReturn(Optional.of(meetup));
 
-        Meetup meetupUpdated = meetup;
-        meetupUpdated.setEvent("Womakercode Java");
+        meetup.setEvent("Womakercode Java");
 
-        BDDMockito.given(meetupService.update(meetup)).willReturn(meetupUpdated);
+        BDDMockito.given(meetupService.update(meetup)).willReturn(meetup);
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.put(MEETUP_API.concat("/" + idMeetup))
-                .contentType(json)
+                .content(json)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON);
 
@@ -244,6 +242,11 @@ public class MeetupControllerTest {
 
     private Meetup createNewMeetup() {
         return Meetup.builder().id(101).event("Womakerscode Java").meetupDate("25/06/2022").registered(true)
+                .build();
+    }
+
+    private MeetupUpdateDTO createMeetupUpdateDTO() {
+        return MeetupUpdateDTO.builder().event("Womalercode").date("06-05-2022").ownerId(1)
                 .build();
     }
 }
