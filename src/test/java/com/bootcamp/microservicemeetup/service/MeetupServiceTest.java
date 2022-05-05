@@ -1,6 +1,5 @@
 package com.bootcamp.microservicemeetup.service;
 
-import com.bootcamp.microservicemeetup.controller.dto.MeetupFilterDTO;
 import com.bootcamp.microservicemeetup.exception.BusinessException;
 import com.bootcamp.microservicemeetup.model.entity.Meetup;
 import com.bootcamp.microservicemeetup.repository.MeetupRepository;
@@ -12,18 +11,19 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 
@@ -55,23 +55,6 @@ public class MeetupServiceTest {
         assertThat(savedMeetup.getEvent()).isEqualTo("Womakerscode Java");
         assertThat(savedMeetup.getMeetupDate()).isEqualTo("25/06/2022");
         assertThat(savedMeetup.getRegistered()).isEqualTo(true);
-    }
-
-    @Test
-    @DisplayName("Should throw business error when thy " +
-            "to save a new meetup with a meetup duplicated")
-    public void shouldNotSaveAsMeetupDuplicated() {
-
-        Meetup meetup = createNewMeetup();
-
-        Mockito.when(repository.existsById(any())).thenReturn(true);
-
-        Throwable exception = Assertions.catchThrowable( () -> meetupService.save(meetup));
-        assertThat(exception)
-                .isInstanceOf(BusinessException.class)
-                .hasMessage("Meetup already created");
-
-        Mockito.verify(repository, Mockito.never()).save(meetup);
     }
 
     @Test

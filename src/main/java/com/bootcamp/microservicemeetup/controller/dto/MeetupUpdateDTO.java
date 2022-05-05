@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MeetupDataDTO {
+public class MeetupUpdateDTO {
 
   private String event;
 

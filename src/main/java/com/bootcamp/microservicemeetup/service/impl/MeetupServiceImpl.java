@@ -1,5 +1,6 @@
 package com.bootcamp.microservicemeetup.service.impl;
 
+import com.bootcamp.microservicemeetup.exception.BusinessException;
 import com.bootcamp.microservicemeetup.model.entity.Meetup;
 import com.bootcamp.microservicemeetup.repository.MeetupRepository;
 import com.bootcamp.microservicemeetup.service.MeetupService;
@@ -50,10 +51,4 @@ public class MeetupServiceImpl implements MeetupService {
         }
         return repository.findByMeetup(meetup.getEvent(), pageable);
     }
-
-    //    @Override
-//    public Page<Meetup> findByPersonIdOnMeetup(MeetupFilterDTO filterDTO, Pageable pageable) {
-//        return repository.findByPersonIdOnMeetup(filterDTO.getPersonId(), filterDTO.getEvent(), pageable);
-//    }
-
 }
