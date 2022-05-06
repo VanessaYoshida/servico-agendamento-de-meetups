@@ -9,7 +9,7 @@
 
 Consiste em um microserviço que disponibiliza as funcionalidades de criação e manutenção de meetups, e disponibiliza a possibilidade de usuários se registrarem nos meetups.
 
-Neste microsserviço está sendo disponibilizado as funcionalidades de criação de meetups, alteração do meetup, consulta de meetups e permite a exclusão de meetups.
+Este microsserviço está disponibilizado na Azure e possui as funcionalidades de criação de meetups, alteração de meetup, consulta de meetups e permite a exclusão de meetups.
 Também está disponibilizada as funcionalidades de um usuário se registrar em um meetup, alterar uma inscrição, consultar uma inscrição, ou excluir uma inscrição que ele fez em um meetup.
 
 
