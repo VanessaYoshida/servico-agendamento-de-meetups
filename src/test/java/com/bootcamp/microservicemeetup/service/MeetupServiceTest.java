@@ -94,6 +94,31 @@ public class MeetupServiceTest {
 
         Mockito.verify(repository, Mockito.times(1)).delete(meetup);
     }
+    @Test
+    @DisplayName("Should return exception when trying to delete a meetup null")
+    public void tryDeleteNullMeetup() {
+        Meetup meetup = null;
+
+        Throwable exception = Assertions.catchThrowable( () -> meetupService.delete(meetup));
+        assertThat(exception)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Meetup cannot be null");
+
+        Mockito.verify(repository, Mockito.never()).delete(meetup);
+    }
+
+    @Test
+    @DisplayName("Should return exception when trying to delete a meetup with id null")
+    public void tryDeleteNullMeetupId() {
+        Meetup meetup = Meetup.builder().id(null).meetupDate("06-05-2022").build();
+
+        Throwable exception = Assertions.catchThrowable( () -> meetupService.delete(meetup));
+        assertThat(exception)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Meetup cannot be null");
+
+        Mockito.verify(repository, Mockito.never()).delete(meetup);
+    }
 
     @Test
     @DisplayName("Shoud update an meetup")
@@ -111,6 +136,32 @@ public class MeetupServiceTest {
         assertThat(meetup.getEvent()).isEqualTo(updatedMeetup.getEvent());
         assertThat(meetup.getMeetupDate()).isEqualTo(updatedMeetup.getMeetupDate());
         assertThat(meetup.getRegistered()).isEqualTo(updatedMeetup.getRegistered());
+    }
+
+    @Test
+    @DisplayName("Should return exception when trying to update a meetup null")
+    public void tryUpdateNullMeetup() {
+        Meetup meetup = null;
+
+        Throwable exception = Assertions.catchThrowable( () -> meetupService.update(meetup));
+        assertThat(exception)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Meetup cannot be null");
+
+        Mockito.verify(repository, Mockito.never()).save(meetup);
+    }
+
+    @Test
+    @DisplayName("Should return exception when trying to update a meetup with id null")
+    public void tryUpdateNullMeetupId() {
+        Meetup meetup = Meetup.builder().id(null).meetupDate("06-05-2022").build();
+
+        Throwable exception = Assertions.catchThrowable( () -> meetupService.update(meetup));
+        assertThat(exception)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Meetup cannot be null");
+
+        Mockito.verify(repository, Mockito.never()).save(meetup);
     }
 
     @Test
@@ -134,39 +185,19 @@ public class MeetupServiceTest {
         assertThat(result.getPageable().getPageSize()).isEqualTo(10);
     }
 
-//    @Test
-//    @DisplayName("Should get an Meetup model by meetup attribute")
-//    public void getMeetupByMeetupAtrb() {
-//        String event = "Womakerscode Java";
-//
-//        Mockito.when(repository.findById(123))
-//                .thenReturn(Optional.of(Meetup.builder().id(123).event("Womakerscode Java").build()));
-//
-//        Optional<Meetup> meetup = meetupService.getRegistrationByMeetupAttribute(event);
-//
-//        assertThat(meetup.isPresent()).isTrue();
-//        assertThat(meetup.get().getId()).isEqualTo(11);
-//        assertThat(meetup.get().getEvent()).isEqualTo(event);
-//
-//        Mockito.verify(repository, Mockito.times(1)).findByEventOnMeetup(event);
-//    }
+    @Test
+    @DisplayName("Should return exception when trying to find a meetup null")
+    public void tryFindMeetupNull() {
+        Meetup meetup = null;
+        Pageable pageRequest = PageRequest.of(0,10);
 
-//    @Test
-//    @DisplayName("Should get all Meetup")
-//    public void getAllMeetup() {
-//        Meetup meetup = createNewMeetup();
-//
-//        Integer id = 11;
-//        Meetup meetup2 = createNewMeetup();
-//        meetup2.setId(id);
-//
-//        Mockito.when(repository.findAll()).thenReturn(Arrays.asList(meetup, meetup2));
-//
-//        List<Meetup> foundMeetup = meetupService.getMeetupAll();
-//
-//        assertThat(foundMeetup.listIterator());
-//        assertEquals(2, foundMeetup.size(), "Same amount of Register found");
-//    }
+        Throwable exception = Assertions.catchThrowable( () -> meetupService.getRegistrationsByMeetup(meetup, pageRequest));
+        assertThat(exception)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Meetup event cannot be null");
+
+        Mockito.verify(repository, Mockito.never()).findByMeetup("Womakercode", pageRequest);
+    }
 
     private Meetup createNewMeetup() {
         return Meetup.builder().id(101).event("Womakerscode Java").meetupDate("25/06/2022").registered(true)

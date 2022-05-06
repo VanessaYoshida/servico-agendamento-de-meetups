@@ -1,6 +1,7 @@
 package com.bootcamp.microservicemeetup.service;
 
 import com.bootcamp.microservicemeetup.exception.BusinessException;
+import com.bootcamp.microservicemeetup.model.entity.Meetup;
 import com.bootcamp.microservicemeetup.model.entity.Registration;
 import com.bootcamp.microservicemeetup.repository.RegistrationRepository;
 import com.bootcamp.microservicemeetup.service.impl.RegistrationServiceImpl;
@@ -116,6 +117,32 @@ public class RegistrationServiceTest {
     }
 
     @Test
+    @DisplayName("Should return exception when trying to delete a registration null")
+    public void tryDeleteNullRegistration() {
+        Registration registration = null;
+
+        Throwable exception = Assertions.catchThrowable( () -> registrationService.delete(registration));
+        assertThat(exception)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Registration id cannot be null");
+
+        Mockito.verify(repository, Mockito.never()).delete(registration);
+    }
+
+    @Test
+    @DisplayName("Should return exception when trying to delete a registration id null")
+    public void tryDeleteNullRegistrationId() {
+        Registration registration = Registration.builder().id(null).dateOfRegistration(LocalDate.now()).build();;
+
+        Throwable exception = Assertions.catchThrowable( () -> registrationService.delete(registration));
+        assertThat(exception)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Registration id cannot be null");
+
+        Mockito.verify(repository, Mockito.never()).delete(registration);
+    }
+
+    @Test
     @DisplayName("Shoud update an registration")
     public void updateRegistration() {
         Integer id = 11;
@@ -131,6 +158,32 @@ public class RegistrationServiceTest {
         assertThat(registration.getName()).isEqualTo(updatedRegistration.getName());
         assertThat(registration.getDateOfRegistration()).isEqualTo(updatedRegistration.getDateOfRegistration());
         assertThat(registration.getPersonId()).isEqualTo(updatedRegistration.getPersonId());
+    }
+
+    @Test
+    @DisplayName("Should return exception when trying to update a registration null")
+    public void tryUpdateNullRegistration() {
+        Registration updateRegistration = null;
+
+        Throwable exception = Assertions.catchThrowable( () -> registrationService.update(updateRegistration));
+        assertThat(exception)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Registration id cannot be null");
+
+        Mockito.verify(repository, Mockito.never()).save(updateRegistration);
+    }
+
+    @Test
+    @DisplayName("Should return exception when trying to update a registration with id null")
+    public void tryUpdateNullRegistrationId() {
+        Registration updateRegistration = Registration.builder().id(null).dateOfRegistration(LocalDate.now()).build();
+
+        Throwable exception = Assertions.catchThrowable( () -> registrationService.update(updateRegistration));
+        assertThat(exception)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Registration id cannot be null");
+
+        Mockito.verify(repository, Mockito.never()).save(updateRegistration);
     }
 
     @Test
