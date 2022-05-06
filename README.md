@@ -5,7 +5,7 @@
 
 <p align="center"> No Bootcamp de Java da WomakersCode estamos desenvolvendo microsserviços com Spring Boot e utilizando técnicas de desenvolvimento guiada por testes utilizando a metodologia do TDD. </p> 
 
-## 🤔 Descrição do microsserviço: Serviço de Agendamento de Meetups
+## Descrição do microsserviço: Serviço de Agendamento de Meetups
 
 Consiste em um microserviço que disponibiliza as funcionalidades de criação e manutenção de meetups, e disponibiliza a possibilidade de usuários se registrarem nos meetups.
 
