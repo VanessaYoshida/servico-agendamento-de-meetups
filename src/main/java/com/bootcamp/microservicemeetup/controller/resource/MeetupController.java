@@ -55,7 +55,7 @@ public class MeetupController {
         return meetupService
                 .getById(id)
                 .map(meetup -> modelMapper.map(meetup, MeetupDTO.class))
-                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping

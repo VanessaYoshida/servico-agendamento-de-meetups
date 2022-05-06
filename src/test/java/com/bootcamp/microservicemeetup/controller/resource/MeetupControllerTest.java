@@ -6,7 +6,6 @@ import com.bootcamp.microservicemeetup.exception.BusinessException;
 import com.bootcamp.microservicemeetup.model.entity.Meetup;
 import com.bootcamp.microservicemeetup.model.entity.Registration;
 import com.bootcamp.microservicemeetup.service.MeetupService;
-import com.bootcamp.microservicemeetup.service.RegistrationService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,9 +47,6 @@ public class MeetupControllerTest {
 
     @Autowired
     MockMvc mockMvc;
-
-    @MockBean
-    RegistrationService registrationService;
 
     @MockBean
     MeetupService meetupService;
@@ -247,26 +243,16 @@ public class MeetupControllerTest {
                 .andExpect(status().isOk());
     }
 
-    private Meetup createNewMeetup() {
-        return Meetup.builder().id(101).event("Womakerscode Java").meetupDate("25/06/2022").registered(true)
-                .build();
-    }
-
-    private MeetupUpdateDTO createMeetupUpdateDTO() {
-        return MeetupUpdateDTO.builder().event("Womalercode").date("06-05-2022").ownerId(1)
-                .build();
-    }
-
     @Test
     @DisplayName("Should return meetup")
     void testFindAndShouldMeetup() throws Exception {
 
         Meetup meetup = Meetup.builder().event("WomakersCode").id(1).meetupDate("05-05-2022").ownerId(1)
                 .registrations(List.of(Registration.builder().id(1)
-                .personId("1").dateOfRegistration(LocalDate.now()).name("VanessaYoshida").build())).build();
+                        .personId("1").dateOfRegistration(LocalDate.now()).name("VanessaYoshida").build())).build();
 
         BDDMockito.given(meetupService.getRegistrationsByMeetup(Mockito.any(Meetup.class),
-                Mockito.any(Pageable.class)))
+                        Mockito.any(Pageable.class)))
                 .willReturn(new PageImpl<Meetup>(Arrays.asList(meetup), PageRequest.of(0, 10), 1));
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get(MEETUP_API.concat("?event=WoMakersCode&page=0&size=10"))
@@ -278,7 +264,6 @@ public class MeetupControllerTest {
                 .andExpect(jsonPath("totalElements").value(1))
                 .andExpect(jsonPath("pageable.pageSize").value(10))
                 .andExpect(jsonPath("pageable.pageNumber").value(0));
-
     }
 
     @Test
@@ -298,5 +283,10 @@ public class MeetupControllerTest {
                 .andExpect(jsonPath("totalElements").value(0))
                 .andExpect(jsonPath("pageable.pageSize").value(10))
                 .andExpect(jsonPath("pageable.pageNumber").value(0));
+    }
+
+    private MeetupUpdateDTO createMeetupUpdateDTO() {
+        return MeetupUpdateDTO.builder().event("Womalercode").date("06-05-2022").ownerId(1)
+                .build();
     }
 }

@@ -1,12 +1,18 @@
 package com.bootcamp.microservicemeetup.controller.resource;
 
-import com.bootcamp.microservicemeetup.controller.resource.RegistrationController;
 import com.bootcamp.microservicemeetup.controller.dto.RegistrationDTO;
-import com.bootcamp.microservicemeetup.model.entity.Registration;
-import com.bootcamp.microservicemeetup.model.entity.Meetup;
-import com.bootcamp.microservicemeetup.service.RegistrationService;
-import com.bootcamp.microservicemeetup.service.MeetupService;
 import com.bootcamp.microservicemeetup.exception.BusinessException;
+import com.bootcamp.microservicemeetup.model.entity.Meetup;
+import com.bootcamp.microservicemeetup.model.entity.Registration;
+import com.bootcamp.microservicemeetup.service.MeetupService;
+import com.bootcamp.microservicemeetup.service.RegistrationService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.BDDMockito;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -20,19 +26,16 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Optional;
+
 import static org.hamcrest.Matchers.hasSize;
-import static org.mockito.Mockito.*;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
-import org.mockito.Mockito;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyInt;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")

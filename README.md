@@ -5,9 +5,20 @@
 
 <p align="center"> No Bootcamp de Java da WomakersCode estamos desenvolvendo microsserviços com Spring Boot e utilizando técnicas de desenvolvimento guiada por testes utilizando a metodologia do TDD. </p> 
 
-## 🤔 O que é o projeto?
+## 🤔 Descrição do microsserviço: Serviço de Agendamento de Meetups
 
-Consiste num pequeno microservice que irá ter lado de client e server no momento de se cadastrar num meetup.
+Consiste em um microserviço que disponibiliza as funcionalidades de criação e manutenção de meetups, e disponibiliza a possibilidade de usuários se registrarem nos meetups.
+
+Neste microsserviço está sendo disponibilizado as funcionalidades de criação de meetups, alteração do meetup, consulta de meetups e permite a exclusão de meetups.
+Também está disponibilizada as funcionalidades de um usuário se registrar em um meetup, alterar uma inscrição, consultar uma inscrição, ou excluir uma inscrição que ele fez em um meetup.
+
+
+### Regras de Negócio
+- Um meetup pode conter várias incrições de usuários
+- Vários usuários diferentes podem estar cadastrados em um meetup
+- Não é possível consultar ou deletar um meetup que não existe
+- Será devolvido erro quando tentar consultar um registro que não existe
+
 
 ## Índice
 
@@ -15,8 +26,9 @@ Consiste num pequeno microservice que irá ter lado de client e server no moment
 * [2. O que é TDD?](#tdd)
 * [3. Tecnologias Utilizadas](#tecnologias)
 * [4. Funcionalidades do microsserviço](#funcionalidades)
-* [5. Checklist das tarefas solicitadas no Bootcamp](#checklist)
-* [6. Referências](#referencias)
+* [5. Swagger disponibilizado na Azure](#swagger)
+* [6. Checklist das tarefas solicitadas no Bootcamp](#checklist)
+* [7. Referências](#referencias)
 
 <div id='microsserviços'/>
 
@@ -53,11 +65,43 @@ TDD é uma sigla para Test Driven Development, ou Desenvolvimento Orientado a Te
 
 ## 4. Funcionalidades do microsserviço
 
+#### Cadastrar um Meetup
+- POST /api/meetups
+- @RequestBody Example Value
+  - {
+    "date": "string",
+    "event": "string",
+    "ownerId": 1
+    }
+
+#### Buscar Meetup por ID
+- GET /api/meetups/{id}
+
+#### Buscar Meetup
+- GET /api/meetups
+
+#### Alteração de dados do Meetup
+- PUT /api/meetups/{id}
+
+#### Excluir Meetup
+- DELETE /api/meetups/{id}
+
 #### Registrar Agendamento de Meetup
 - POST /api/registration
+- @RequestBody Example Value
+  - {
+    "dateOfRegistration": "2022-05-06",
+    "id": 0,
+    "meetupId": 1,
+    "name": "string",
+    "personId": 1
+    }
 
 #### Buscar Registro por ID
 - GET /api/registration/{id}
+- 
+#### Buscar Registro
+- GET /api/registration
 
 #### Alteração de dados do Registro
 - PUT /api/registration/{id}
@@ -67,7 +111,12 @@ TDD é uma sigla para Test Driven Development, ou Desenvolvimento Orientado a Te
 
 <div id='checklist'/>
 
-## 5. Checklist das tarefas solicitadas no Bootcamp
+
+## 5. Swagger
+- [Link do Swagger](https://agendamento-meetup.azurewebsites.net/swagger-ui/#/)
+
+
+## 6. Checklist das tarefas solicitadas no Bootcamp
 
 ## 👩‍💻 TODO list
 - [X] Implementação da classe se servico
@@ -77,8 +126,8 @@ TDD é uma sigla para Test Driven Development, ou Desenvolvimento Orientado a Te
 - [X] Testes unitarios no repository
 - [X] Implementação do repository
 - [X] Swagger
-- [ ] Testes locais via postman
-- [ ] Deploy no azure
+- [X] Testes locais via postman
+- [X] Deploy no azure
 
 <div id='referencias'/>
 

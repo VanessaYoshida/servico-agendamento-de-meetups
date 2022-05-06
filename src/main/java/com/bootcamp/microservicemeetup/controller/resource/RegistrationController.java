@@ -56,9 +56,9 @@ public class RegistrationController {
   public RegistrationDTO get(@PathVariable Integer id) {
 
     return registrationService
-      .getRegistrationById(id)
-      .map(registration -> modelMapper.map(registration, RegistrationDTO.class))
-      .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
+            .getRegistrationById(id)
+            .map(registration -> modelMapper.map(registration, RegistrationDTO.class))
+            .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND));
   }
 
   @DeleteMapping("{id}")
@@ -87,9 +87,9 @@ public class RegistrationController {
     Page<Registration> result = registrationService.find(filter, pageRequest);
 
     List<RegistrationDTO> list = result.getContent()
-      .stream()
-      .map(entity -> modelMapper.map(entity, RegistrationDTO.class))
-      .collect(Collectors.toList());
+            .stream()
+            .map(entity -> modelMapper.map(entity, RegistrationDTO.class))
+            .collect(Collectors.toList());
 
     return new PageImpl<RegistrationDTO>(list, pageRequest, result.getTotalElements());
   }

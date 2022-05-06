@@ -1,12 +1,12 @@
 package com.bootcamp.microservicemeetup.service.impl;
 
-import com.bootcamp.microservicemeetup.exception.BusinessException;
 import com.bootcamp.microservicemeetup.model.entity.Meetup;
 import com.bootcamp.microservicemeetup.repository.MeetupRepository;
 import com.bootcamp.microservicemeetup.service.MeetupService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 import java.util.Optional;
 
 @Service
