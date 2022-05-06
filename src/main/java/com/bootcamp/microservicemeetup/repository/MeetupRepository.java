@@ -11,16 +11,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface MeetupRepository extends JpaRepository<Meetup, Integer> {
 
-  @Query( value = " select l from Meetup as l " +
-          "join l.registrations as b " +
-          "where b.personId = :personId " +
-          "and l.event = :event ")
-  Page<Meetup>findByPersonIdOnMeetup(
-          @Param("personId") String personId,
-          @Param("event") String event,
-          Pageable pageable
-  );
-
   @Query ( value = " select l from Meetup as l " +
           "join l.registrations as b " +
           "where l.event = :event ")

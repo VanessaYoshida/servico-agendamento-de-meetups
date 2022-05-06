@@ -1,6 +1,5 @@
 package com.bootcamp.microservicemeetup.service;
 
-import com.bootcamp.microservicemeetup.exception.BusinessException;
 import com.bootcamp.microservicemeetup.model.entity.Meetup;
 import com.bootcamp.microservicemeetup.repository.MeetupRepository;
 import com.bootcamp.microservicemeetup.service.impl.MeetupServiceImpl;
